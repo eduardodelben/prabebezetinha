@@ -1,0 +1,429 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para você ❤️</title>
+    <link type="text/css" rel="stylesheet" href="css/default.css">
+    
+    <style>
+        /* ==================================================
+           CONFIGURAÇÕES DE TELA E FUNDO
+           ================================================== */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow-x: hidden;
+        }
+
+        #bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('desktopsite.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: -2;
+        }
+
+        #mainDiv {
+            background-color: rgba(0, 0, 0, 0.6) !important;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px;
+            box-sizing: border-box;
+            z-index: -1;
+        }
+
+        #content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            margin: 0 !important;
+        }
+
+        #code {
+            color: #ffffff !important;
+            font-size: 15px;
+            width: 45%;
+            height: 80%;
+            overflow-y: auto;
+            position: relative !important;
+            margin: 0 !important;
+            padding: 20px;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        /* O coração agora ocupa exatamente a proporção da tela */
+        #loveHeart {
+            width: 50%;
+            height: 100% !important;
+            position: relative !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 !important;
+            overflow: hidden; /* Garante que nada vaze para fora do container */
+        }
+
+        #garden {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Centralização estrita e segura para impedir qualquer vazamento */
+        #words {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            text-align: center;
+            width: 80% !important;
+            max-width: 320px !important;
+            box-sizing: border-box;
+            padding: 10px;
+            pointer-events: none; /* Permite clicar através se necessário */
+        }
+
+        #messages {
+            font-size: 14px;
+            color: #ffcccc;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+
+        #elapseClock {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+
+        #loveu {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ffcccc;
+            word-wrap: break-word;
+        }
+
+        /* ==================================================
+           ADAPTAÇÃO PARA CELULAR
+           ================================================== */
+        @media (max-width: 768px) {
+            #bg-image {
+                background: url('celularsite.jpg') no-repeat center center;
+                background-size: cover;
+            }
+
+            #mainDiv {
+                height: auto;
+                min-height: 100vh;
+                position: relative;
+                flex-direction: column;
+                padding: 20px;
+                padding-top: 70px;
+            }
+
+            #content {
+                flex-direction: column;
+                height: auto;
+            }
+
+            #code {
+                width: 100%;
+                height: auto;
+                font-size: 13.5px;
+                padding: 10px;
+                margin-bottom: 20px !important;
+            }
+            
+            #loveHeart {
+                width: 100%;
+                height: 400px !important;
+            }
+        }
+
+        /* ==================================================
+           PLAYER DE MÚSICA ESTILO SPOTIFY
+           ================================================== */
+        #spotify-player {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 20px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .song-info svg {
+            margin-right: 8px;
+            fill: #1DB954;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .controls button:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        .controls button svg {
+            fill: #fff;
+        }
+
+        /* ==================================================
+           EFEITO DA CHUVA DE CORAÇÕES
+           ================================================== */
+        .heart-particle {
+            position: fixed;
+            color: #ff4d4d;
+            font-size: 20px;
+            top: -10vh;
+            animation: fall linear forwards;
+            z-index: 0;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh); opacity: 0; }
+        }
+    </style>
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/garden.js"></script>
+    <script type="text/javascript" src="js/functions.js"></script>
+</head>
+<body>
+
+    <div id="bg-image"></div>
+    <audio id="bgMusic" src="musica.mp3" loop></audio>
+
+    <div id="spotify-player">
+        <div class="song-info">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+            <span>Nossa Música</span>
+        </div>
+        <div class="controls">
+            <button id="vol-down" title="Diminuir Volume">
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>
+                </svg>
+            </button>
+            
+            <button id="play-pause" title="Play / Pause">
+                <svg id="icon-play" viewBox="0 0 24 24" width="28" height="28">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="icon-pause" viewBox="0 0 24 24" width="28" height="28" style="display:none;">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+            </button>
+
+            <button id="vol-up" title="Aumentar Volume">
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="particles"></div>
+
+    <div id="mainDiv">
+        <div id="content">
+            <div id="code">
+                Oiiiii, minha princesinha! Lembra quando começamos a nos falar? Dia 31 de dezembro. Tudo foi acontecendo no tempo certo e do jeito certo, como Deus planejou. Não estávamos entendendo nada, mas estamos aqui: distantes, mas juntinhos.<br><br>
+                
+                Desde que começamos a nos falar mais e mais, você não sai da minha cabeça. Eu te amo muito, eu te amo infinito ao céu! Não tiro a sua voz, o seu cabelo, a sua risada e o seu olhar da minha cabeça. Quero que você seja minha esposa, mãe dos meus filhos. Vou fazer de você a mulher mais invejada deste mundo e te fazer a mais amada de toda a Terra.<br><br>
+                
+                Tudo isso começou de repente, em um momento difícil para os dois, e foi crescendo. Queria que você soubesse o quanto te amo e o quanto você é especial para mim. Eu te amo muito, neném! Quero que saiba que sempre estarei aqui para você, não importa para o que for. Estou muito ansioso para te beijar, cheirar, abraçar e te olhar nos olhos pessoalmente de novo, que saudade...
+            </div>
+            
+            <div id="loveHeart">
+                <canvas id="garden"></canvas>
+                <div id="words">
+                    <div id="messages">
+                        Tempo desde o nosso primeiro "oi":
+                        <div id="elapseClock"></div>
+                    </div>
+                    <div id="loveu">
+                        Com todo o meu amor.<br/>
+                        <div class="signature">- Eduardo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        // Centralização dinâmica baseada no tamanho real do container do coração
+        var offsetX = $("#loveHeart").width() / 2;
+        var offsetY = $("#loveHeart").height() / 2;
+        
+        var together = new Date();
+        together.setFullYear(2025, 11, 31); 
+        together.setHours(0);
+        together.setMinutes(0);
+        together.setSeconds(0);
+        together.setMilliseconds(0);
+
+        // Função customizada para exibir o tempo sem os segundos
+        function timeElapseWithoutSeconds(date) {
+            var current = Date();
+            var seconds = (together - current) / 1000;
+            // Usando a lógica padrão do functions.js mas formatando a saída sem segundos se preferir, 
+            // ou reescrevendo a formatação do elapseClock diretamente:
+            var days = Math.floor(seconds / (3600 * 24));
+            seconds = seconds % (3600 * 24);
+            var hours = Math.floor(seconds / 3600);
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+            seconds = seconds % 3600;
+            var minutes = Math.floor(seconds / 60);
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            var result = "<span class=\"digit\">" + days + "</span> dias <span class=\"digit\">" + hours + "</span> horas <span class=\"digit\">" + minutes + "</span> minutos"; 
+            $("#elapseClock").html(result);
+        }
+        
+        if (!document.createElement('canvas').getContext) {
+            var msg = document.createElement("div");
+            msg.id = "errorMsg";
+            msg.innerHTML = "Seu navegador não suporta HTML5!<br/>Por favor, atualize o navegador."; 
+            document.body.appendChild(msg);
+            $("#code").css("display", "none")
+        } else {
+            setTimeout(function () { startHeartAnimation(); }, 3000);
+            
+            // Substitui a chamada original do timeElapse para ocultar os segundos
+            function customTimeElapse(date) {
+                var current = new Date();
+                var elapsed = (current - date) / 1000;
+                var days = Math.floor(elapsed / (3600 * 24));
+                elapsed %= (3600 * 24);
+                var hours = Math.floor(elapsed / 3600);
+                if (hours < 10) hours = "0" + hours;
+                elapsed %= 3600;
+                var minutes = Math.floor(elapsed / 60);
+                if (minutes < 10) minutes = "0" + minutes;
+                
+                var result = "<span class=\"digit\">" + days + "</span> dias, <span class=\"digit\">" + hours + "</span> horas e <span class=\"digit\">" + minutes + "</span> minutos";
+                $("#elapseClock").html(result);
+            }
+
+            customTimeElapse(together);
+            setInterval(function () { customTimeElapse(together); }, 1000);
+            
+            function adjustCodePosition() {}
+            
+            $("#code").typewriter();
+            
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.classList.add('heart-particle');
+                particle.innerHTML = Math.random() > 0.5 ? '❤️' : '✨'; 
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = Math.random() * 4 + 3 + 's'; 
+                
+                document.getElementById('particles').appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 7000);
+            }
+            setInterval(createParticle, 400); 
+
+            const audio = document.getElementById('bgMusic');
+            const playPauseBtn = document.getElementById('play-pause');
+            const volUpBtn = document.getElementById('vol-up');
+            const volDownBtn = document.getElementById('vol-down');
+            const iconPlay = document.getElementById('icon-play');
+            const iconPause = document.getElementById('icon-pause');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            });
+
+            audio.addEventListener('play', () => {
+                iconPlay.style.display = 'none';
+                iconPause.style.display = 'block';
+            });
+
+            audio.addEventListener('pause', () => {
+                iconPlay.style.display = 'block';
+                iconPause.style.display = 'none';
+            });
+
+            volUpBtn.addEventListener('click', () => {
+                if (audio.volume < 1.0) {
+                    audio.volume = Math.min(1.0, audio.volume + 0.1);
+                }
+            });
+
+            volDownBtn.addEventListener('click', () => {
+                if (audio.volume > 0.0) {
+                    audio.volume = Math.max(0.0, audio.volume - 0.1);
+                }
+            });
+
+            $(document).one('click', function() {
+                audio.play();
+            });
+        }
+    </script>
+</body>
+</html>
